@@ -1,0 +1,23 @@
+{
+  "name": "spritepack",
+  "description": "Yet another spritesheet packer",
+  "author": "Alexandre Breteau <contact@seldszar.fr> (https://seldszar.fr)",
+  "homepage": "https://github.com/seldszar/spitepack#readme",
+  "repository": "seldszar/spitepack",
+  "license": "MIT",
+  "bin": {
+    "spritepack": "cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/seldszar/spitepack/issues"
+  },
+  "dependencies": {
+    "canvas": "^2.7.0",
+    "commander": "^7.2.0",
+    "fast-glob": "^3.2.5",
+    "maxrects-packer": "^2.7.2",
+    "mem": "^8.1.0",
+    "pixelmatch": "^5.2.1",
+    "sharp": "^0.28.1"
+  }
+}
