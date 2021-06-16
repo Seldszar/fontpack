@@ -159,7 +159,7 @@ async function main() {
     fs.readFileSync(manifestPath, "utf-8"),
   );
 
-  const packer = new MaxRectsPacker(4096, 4096, 0, {
+  const packer = new MaxRectsPacker(4096, 4096, 1, {
     allowRotation: true,
   });
 
@@ -247,18 +247,18 @@ async function main() {
           frame: {
             x: rect.x,
             y: rect.y,
-            w: rect.width,
-            h: rect.height,
+            w: sprite.texture.width,
+            h: sprite.texture.height,
           },
           sourceSize: {
-            w: rect.width + sprite.padding.left + sprite.padding.right,
-            h: rect.height + sprite.padding.top + sprite.padding.bottom,
+            w: sprite.texture.width + sprite.padding.left + sprite.padding.right,
+            h: sprite.texture.height + sprite.padding.top + sprite.padding.bottom,
           },
           spriteSourceSize: {
             x: sprite.padding.left,
             y: sprite.padding.top,
-            w: rect.width,
-            h: rect.height,
+            w: sprite.texture.width,
+            h: sprite.texture.height,
           },
           anchor: {
             x: sprite.anchor[0],
