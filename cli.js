@@ -1,5 +1,6 @@
 const Canvas = require("canvas");
 const commander = require("commander");
+const crypto = require("crypto");
 const fg = require("fast-glob");
 const fs = require("fs");
 const { MaxRectsPacker } = require("maxrects-packer");
@@ -141,11 +142,45 @@ class AtlasTexture {
   });
 }
 
+function compressAtlas(atlas) {
+  const frameSubstitutes = new Map();
+  const frames = new Map();
+
+  for (const [key, data] of Object.entries(atlas.frames)) {
+    const hash = crypto.createHash("md5")
+      .update(JSON.stringify([atlas, data]))
+      .digest("hex")
+      .slice(0, 10);
+
+    frameSubstitutes.set(key, hash);
+    frames.set(hash, data);
+  }
+
+  atlas.frames = Object.fromEntries(frames);
+
+  if (atlas.animations) {
+    const animations = new Map();
+
+    for (const [key, animationFrames] of Object.entries(atlas.animations)) {
+      const result = [];
+
+      animationFrames.forEach((texture) => {
+        result.push(frameSubstitutes.get(texture));
+      });
+
+      animations.set(key, result);
+    }
+
+    atlas.animations = Object.fromEntries(animations);
+  }
+}
+
 async function main() {
   commander
     .requiredOption("-i, --input <path>", "the input path")
     .requiredOption("-o, --output <path>", "the output path")
     .option("-f, --format <name>", "the texture format", "webp")
+    .option("-c, --compress", "indicates if the manifest must be compressed", false)
     .parse();
 
   const options = commander.opts();
@@ -183,7 +218,7 @@ async function main() {
     }
 
     sprites.push({
-      name: path.posix.relative(inputPath.replace(/\\/g, "/"), imagePath),
+      path: path.posix.relative(inputPath.replace(/\\/g, "/"), imagePath),
       padding: texture.padding,
       anchor: [0.5, 0.5],
       texture,
@@ -194,10 +229,11 @@ async function main() {
     const isMatch = picomatch(path);
 
     for (const sprite of sprites) {
-      if (!isMatch(sprite.name)) {
+      if (!isMatch(sprite.path)) {
         continue;
       }
 
+      sprite.name = sprite.path;
       sprite.anchor = anchor;
     }
   }
@@ -228,7 +264,7 @@ async function main() {
 
     fs.writeFileSync(`${outputPath}.${options.format}`, await encodeTexture(canvas, options.format));
 
-    const data = {
+    const atlas = {
       animations: {},
       frames: {},
       meta: {
@@ -266,7 +302,7 @@ async function main() {
           },
         };
 
-        data.frames[sprite.name] = frame;
+        atlas.frames[sprite.name] = frame;
       }
     }
 
@@ -277,7 +313,7 @@ async function main() {
         const isMatch = picomatch(path);
 
         for (const sprite of sprites) {
-          if (!isMatch(sprite.name)) {
+          if (!isMatch(sprite.path)) {
             continue;
           }
 
@@ -285,10 +321,18 @@ async function main() {
         }
       }
 
-      data.animations[name] = frames;
+      if (frames.length === 0) {
+        console.warn(`Animation "${name}" doesn't include any frames`);
+      }
+
+      atlas.animations[name] = frames;
     }
 
-    fs.writeFileSync(`${outputPath}.json`, JSON.stringify(data));
+    if (options.compress) {
+      compressAtlas(atlas);
+    }
+
+    fs.writeFileSync(`${outputPath}.json`, JSON.stringify(atlas));
   }
 }
 
