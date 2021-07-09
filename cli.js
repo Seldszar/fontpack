@@ -180,6 +180,7 @@ async function main() {
     .requiredOption("-i, --input <path>", "the input path")
     .requiredOption("-o, --output <path>", "the output path")
     .option("-f, --format <name>", "the texture format", "webp")
+    .option("-m, --manifest <path>", "the manifest path", "manifest.json")
     .option("-c, --compress", "indicates if the manifest must be compressed", false)
     .parse();
 
@@ -187,8 +188,7 @@ async function main() {
 
   const inputPath = path.resolve(options.input);
   const outputPath = path.resolve(options.output);
-
-  const manifestPath = path.resolve(inputPath, "manifest.json");
+  const manifestPath = path.resolve(options.manifest);
 
   const manifest = JSON.parse(
     fs.readFileSync(manifestPath, "utf-8"),
