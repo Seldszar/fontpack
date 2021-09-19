@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const Canvas = require("canvas");
 const commander = require("commander");
 const crypto = require("crypto");
