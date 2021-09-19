@@ -1,5 +1,6 @@
 {
   "name": "spritepack",
+  "version": "0.0.0-development",
   "description": "Yet another spritesheet packer",
   "author": "Alexandre Breteau <contact@seldszar.fr> (https://seldszar.fr)",
   "homepage": "https://github.com/seldszar/spitepack#readme",
