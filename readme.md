@@ -1,6 +1,6 @@
-# spitepack
+# fontpack
 
-> Yet another spritesheet packer
+> Yet another bitmap font packer
 
 ## Table of Contents
 
@@ -17,51 +17,27 @@ $ npm install spitepack
 
 # Usage
 
-Create a `manifest.json` file in the folder containing your sprites [following the JSON Schema](./schema.json), then run `spritepack`.
+Create a `manifest.json` file in the folder containing your fonts [following the JSON Schema](./schema.json), then run `fontpack`.
 
 Here's an example:
 
 ```json
-{
-  "sources": [
-    "**/*.{gif,jpg,png,svg}"
-  ],
-  "frames": [
-    {
-      "path": "**",
-      "anchor": [0.5, 1]
-    }
-  ],
-  "animations": {
-    "clap": {
-      "frames": [
-        {
-          "path": "clap/*"
-        }
-      ]
-    },
-    "idle": {
-      "frames": [
-        {
-          "path": "idle/*"
-        }
-      ]
-    },
-    "jump": {
-      "frames": [
-        {
-          "path": "jump-prepare/*"
-        },
-        {
-          "path": "jump/*"
-        },
-        {
-          "path": "jump-land/*"
-        }
-      ]
-    }
+[
+  {
+    "name": "DMD Large",
+    "size": 19,
+    "sources": [
+      "dmd-large/symbols/*"
+    ]
+  },
+  {
+    "name": "DMD Medium",
+    "size": 10,
+    "sources": [
+      "dmd-medium/symbols/*"
+    ]
   }
-}
+]
 ```
 
 ## Author
